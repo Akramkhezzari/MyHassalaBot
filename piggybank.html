@@ -1,988 +1,546 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>الحصالة اليومية - توفير دينار جزائري</title>
-    <style>
-        /* Reset and Base */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-text-size-adjust: 100%;
-        }
-        
-        :root {
-            --primary-color: #006633; /* أخضر جزائري */
-            --secondary-color: #d21034; /* أحمر جزائري */
-            --accent-color: #ffcc00;
-            --light-color: #f8f9fa;
-            --dark-color: #2c3e50;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --shadow: 0 4px 12px rgba(0,0,0,0.1);
-            --radius: 16px;
-            --radius-sm: 10px;
-        }
-        
-        body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: var(--dark-color);
-            min-height: 100vh;
-            padding: 15px;
-            direction: rtl;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        
-        /* Container */
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            min-height: calc(100vh - 30px);
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* Header */
-        header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #008844 100%);
-            color: white;
-            padding: clamp(20px, 4vw, 30px);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            opacity: 0.1;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-        }
-        
-        .piggy-bank {
-            font-size: clamp(3rem, 10vw, 4rem);
-            margin: 10px 0;
-            display: block;
-        }
-        
-        h1 {
-            font-size: clamp(1.8rem, 5vw, 2.2rem);
-            margin-bottom: 10px;
-            font-weight: 700;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .subtitle {
-            font-size: clamp(1rem, 3vw, 1.1rem);
-            opacity: 0.95;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .date-display {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 50px;
-            padding: 10px 20px;
-            display: inline-block;
-            font-size: clamp(0.9rem, 2.5vw, 1rem);
-            margin-top: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Main Content */
-        .main-content {
-            padding: clamp(15px, 3vw, 25px);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* Today Section */
-        .today-section {
-            background: linear-gradient(135deg, #f8fff9 0%, #e8f5e9 100%);
-            border-radius: var(--radius);
-            padding: clamp(15px, 3vw, 20px);
-            margin-bottom: clamp(15px, 3vw, 25px);
-            border: 2px solid #e0f2e1;
-            border-right: 6px solid var(--primary-color);
-        }
-        
-        h2 {
-            color: var(--primary-color);
-            font-size: clamp(1.3rem, 4vw, 1.5rem);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        h2::before {
-            content: "💰";
-            font-size: 1.5em;
-        }
-        
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .input-row {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        @media (min-width: 768px) {
-            .input-row {
-                flex-direction: row;
-            }
-            
-            .input-row > * {
-                flex: 1;
-            }
-        }
-        
-        input, textarea {
-            padding: 14px 18px;
-            border: 2px solid #e0e0e0;
-            border-radius: var(--radius-sm);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            width: 100%;
-            font-family: inherit;
-        }
-        
-        input:focus, textarea:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
-        }
-        
-        .amount-input-container {
-            position: relative;
-        }
-        
-        .currency-symbol {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.1rem;
-        }
-        
-        .amount-input-container input {
-            padding-left: 50px;
-            text-align: right;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-        
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-            max-height: 150px;
-        }
-        
-        button {
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            padding: 16px 24px;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            touch-action: manipulation;
-        }
-        
-        button:hover, button:active {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 102, 51, 0.3);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        .save-btn {
-            background: linear-gradient(to right, var(--primary-color), #008844);
-            font-size: 1.2rem;
-            padding: 18px;
-            margin-top: 10px;
-        }
-        
-        /* Stats */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin: clamp(15px, 3vw, 25px) 0;
-        }
-        
-        .stat-card {
-            background: white;
-            border-radius: var(--radius-sm);
-            padding: 20px 15px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            border-top: 4px solid var(--primary-color);
-            transition: transform 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .stat-title {
-            font-size: 0.95rem;
-            color: #666;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        
-        .stat-value {
-            font-size: clamp(1.8rem, 4vw, 2.2rem);
-            font-weight: 800;
-            color: var(--primary-color);
-            margin: 5px 0;
-        }
-        
-        .stat-unit {
-            font-size: 0.9rem;
-            color: var(--secondary-color);
-            font-weight: 600;
-        }
-        
-        /* History Section */
-        .history-section {
-            margin-top: auto;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .table-container {
-            overflow-x: auto;
-            border-radius: var(--radius-sm);
-            box-shadow: var(--shadow);
-            flex: 1;
-            margin-bottom: 20px;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-        
-        th {
-            background: linear-gradient(to right, var(--primary-color), #008844);
-            color: white;
-            padding: 18px 15px;
-            text-align: center;
-            font-weight: 600;
-            white-space: nowrap;
-            position: sticky;
-            top: 0;
-        }
-        
-        td {
-            padding: 16px 15px;
-            text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        
-        tr:hover {
-            background-color: #f0f7f0;
-        }
-        
-        .amount-cell {
-            font-weight: 700;
-            color: var(--primary-color);
-            font-size: 1.1rem;
-        }
-        
-        .cumulative-cell {
-            font-weight: 700;
-            color: var(--secondary-color);
-        }
-        
-        .note-cell {
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        .delete-btn {
-            background: var(--danger-color);
-            padding: 10px 20px;
-            font-size: 0.9rem;
-            width: auto;
-            min-width: 80px;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        
-        .action-btn {
-            padding: 12px 20px;
-            font-size: 1rem;
-            border-radius: 50px;
-            width: auto;
-            flex: 1;
-            min-width: 140px;
-            max-width: 200px;
-        }
-        
-        .export-btn {
-            background: linear-gradient(to right, #4CAF50, #2E7D32);
-        }
-        
-        .clear-btn {
-            background: linear-gradient(to right, #ff9800, #f57c00);
-        }
-        
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #666;
-        }
-        
-        .empty-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
-        
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 1px solid #eee;
-            background-color: #f8f9fa;
-        }
-        
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            left: 20px;
-            background: var(--primary-color);
-            color: white;
-            padding: 15px 20px;
-            border-radius: var(--radius-sm);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .container {
-                border-radius: 12px;
-            }
-            
-            header {
-                padding: 20px 15px;
-            }
-            
-            .main-content {
-                padding: 15px;
-            }
-            
-            .stats {
-                grid-template-columns: 1fr;
-            }
-            
-            th, td {
-                padding: 12px 10px;
-                font-size: 0.9rem;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .action-btn {
-                max-width: 100%;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
-            .container {
-                min-height: calc(100vh - 20px);
-            }
-            
-            .date-display {
-                padding: 8px 16px;
-                font-size: 0.85rem;
-            }
-            
-            .amount-input-container input {
-                font-size: 1.1rem;
-                padding-left: 45px;
-            }
-            
-            .currency-symbol {
-                left: 15px;
-                font-size: 1rem;
-            }
-        }
-        
-        /* Landscape Mode */
-        @media (max-height: 600px) and (orientation: landscape) {
-            .container {
-                max-height: 100vh;
-                overflow-y: auto;
-            }
-            
-            header {
-                padding: 15px;
-            }
-            
-            .piggy-bank {
-                font-size: 2.5rem;
-                margin: 5px 0;
-            }
-            
-            .today-section {
-                margin-bottom: 15px;
-            }
-        }
-        
-        /* Dark Mode Support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --light-color: #1a1a1a;
-                --dark-color: #ffffff;
-            }
-            
-            body {
-                background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-                color: white;
-            }
-            
-            .container {
-                background-color: #2d3748;
-                color: white;
-            }
-            
-            input, textarea {
-                background-color: #4a5568;
-                color: white;
-                border-color: #718096;
-            }
-            
-            .today-section {
-                background: #2d3748;
-                border-color: #4a5568;
-            }
-            
-            .stat-card {
-                background-color: #4a5568;
-                color: white;
-            }
-            
-            tr:nth-child(even) {
-                background-color: #4a5568;
-            }
-            
-            tr:hover {
-                background-color: #5a6578;
-            }
-            
-            footer {
-                background-color: #1a202c;
-                color: #a0aec0;
-            }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🐷 حصالة إلكترونية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  :root{
+    --bg1:#f6f2ff;
+    --bg2:#ffe9f3;
+    --card:#ffffff;
+    --primary:#7c3aed;
+    --pink:#ec4899;
+    --text:#1f1147;
+    --muted:#7b7394;
+    --green:#10b981;
+    --danger:#ef4444;
+    --line:#eee7fb;
+  }
+
+  body{
+    font-family:'Cairo', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:22px 14px 70px;
+    color:var(--text);
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .app{width:100%;max-width:520px;display:flex;flex-direction:column;gap:16px;}
+
+  .title{
+    text-align:center;
+    font-size:21px;
+    font-weight:900;
+    letter-spacing:-.3px;
+  }
+  .title span{color:var(--primary);}
+
+  /* ===== البطاقة الرئيسية ===== */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    border-radius:26px;
+    padding:22px 22px 18px;
+    background:linear-gradient(135deg,#7c3aed,#a855f7 45%,#ec4899);
+    color:#fff;
+    box-shadow:0 16px 36px rgba(124,58,237,.34);
+  }
+  .hero::after{
+    content:"🐷";
+    position:absolute;
+    left:-10px;bottom:-22px;
+    font-size:96px;
+    opacity:.16;
+    transform:rotate(-8deg);
+    pointer-events:none;
+  }
+  .hero .label{
+    font-size:13.5px;
+    font-weight:600;
+    opacity:.92;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .hero .total{
+    font-size:42px;
+    font-weight:900;
+    letter-spacing:-1.5px;
+    line-height:1.25;
+    margin-top:2px;
+    transition:transform .25s ease;
+  }
+  .hero .total.pop{transform:scale(1.08);}
+  .hero .avg{
+    margin-top:8px;
+    font-size:13px;
+    font-weight:600;
+    background:rgba(255,255,255,.18);
+    border:1px solid rgba(255,255,255,.25);
+    display:inline-block;
+    padding:5px 12px;
+    border-radius:999px;
+    backdrop-filter:blur(4px);
+  }
+  .hero .avg.small{
+    font-size:12px;
+    padding:4px 10px;
+    margin-top:6px;
+    opacity:.9;
+  }
+
+  /* ===== البطاقات الصغيرة ===== */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .mini{
+    background:var(--card);
+    border-radius:20px;
+    padding:14px 16px;
+    box-shadow:0 8px 26px rgba(80,40,140,.09);
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .mini .k{font-size:12.5px;font-weight:600;color:var(--muted);}
+  .mini .v{font-size:26px;font-weight:900;letter-spacing:-.5px;}
+  .mini .v.purple{color:var(--primary);}
+  .mini .v.pink{color:var(--pink);}
+  .mini .sub{
+    font-size:11px;
+    font-weight:600;
+    color:var(--muted);
+    margin-top:4px;
+    line-height:1.4;
+  }
+  .mini .sub b{color:var(--text);}
+
+  /* ===== الإدخال ===== */
+  .card{
+    background:var(--card);
+    border-radius:22px;
+    padding:16px;
+    box-shadow:0 8px 26px rgba(80,40,140,.09);
+  }
+  .card h2{
+    font-size:15px;
+    font-weight:800;
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--primary);}
+
+  .inputRow{display:flex;gap:10px;}
+  .inputWrap{position:relative;flex:1;}
+  .inputWrap input{
+    width:100%;
+    font-family:inherit;
+    font-size:19px;
+    font-weight:700;
+    color:var(--text);
+    padding:13px 16px;
+    border:2px solid var(--line);
+    border-radius:16px;
+    background:#fbf9ff;
+    outline:none;
+    transition:border-color .2s, background .2s;
+  }
+  .inputWrap input::placeholder{color:#b7b0cd;font-weight:600;font-size:16px;}
+  .inputWrap input:focus{border-color:var(--primary);background:#fff;}
+
+  button{font-family:inherit;cursor:pointer;border:none;transition:transform .12s, filter .2s;}
+
+  .btnAdd{
+    padding:0 24px;
+    border-radius:16px;
+    font-size:16px;
+    font-weight:800;
+    color:#fff;
+    background:linear-gradient(135deg,#7c3aed,#ec4899);
+    box-shadow:0 8px 20px rgba(124,58,237,.32);
+    white-space:nowrap;
+  }
+  .btnAdd:active{transform:scale(.96);}
+
+  .btnSmall{
+    padding:0 16px;
+    font-size:14px;
+    border-radius:14px;
+  }
+
+  .msg{
+    margin-top:10px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--danger);
+    min-height:18px;
+    opacity:0;
+    transition:opacity .2s;
+  }
+  .msg.show{opacity:1;}
+  .msg.ok{color:var(--green);}
+
+  /* ===== السجل ===== */
+  .list{display:flex;flex-direction:column;gap:9px;max-height:330px;overflow-y:auto;padding-left:2px;}
+  .list::-webkit-scrollbar{width:6px;}
+  .list::-webkit-scrollbar-thumb{background:#ded3f7;border-radius:9px;}
+
+  .item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 13px;
+    border-radius:16px;
+    background:#faf8ff;
+    border:1px solid var(--line);
+    animation:fadeIn .28s ease;
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+
+  .item .amount{
+    font-size:17px;
+    font-weight:900;
+    color:var(--green);
+    white-space:nowrap;
+  }
+  .item .date{
+    flex:1;
+    font-size:12px;
+    font-weight:600;
+    color:var(--muted);
+    text-align:left;
+  }
+  .del{
+    background:#fee2e2;
+    color:var(--danger);
+    width:32px;height:32px;
+    border-radius:11px;
+    font-size:16px;
+    font-weight:900;
+    display:grid;place-items:center;
+    flex-shrink:0;
+  }
+  .del:active{transform:scale(.9);}
+
+  .empty{
+    text-align:center;
+    padding:24px 10px;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:600;
+    line-height:2;
+  }
+  .empty .big{font-size:38px;display:block;margin-bottom:4px;}
+
+  .btnReset{
+    width:100%;
+    margin-top:12px;
+    padding:12px;
+    border-radius:16px;
+    font-size:14px;
+    font-weight:800;
+    color:var(--danger);
+    background:#fff1f1;
+    border:1.5px dashed #f8c9c9;
+  }
+  .btnReset:active{transform:scale(.98);}
+
+  footer{
+    text-align:center;
+    font-size:11.5px;
+    color:#a79fc0;
+    font-weight:600;
+    margin-top:4px;
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-bg"></div>
-            <div class="piggy-bank">💰</div>
-            <h1>الحصالة اليومية الجزائرية</h1>
-            <p class="subtitle">ادخر ديناراتك كل يوم وشاهد مدخراتك تنمو!</p>
-            <div class="date-display" id="current-date"></div>
-        </header>
-        
-        <div class="main-content">
-            <section class="today-section">
-                <h2>تسجيل توفير اليوم</h2>
-                <div class="input-group">
-                    <div class="input-row">
-                        <div class="amount-input-container">
-                            <span class="currency-symbol">د.ج</span>
-                            <input type="number" 
-                                   id="amount-input" 
-                                   placeholder="المبلغ المدخر اليوم" 
-                                   min="0" 
-                                   step="10"
-                                   inputmode="decimal"
-                                   required>
-                        </div>
-                        <input type="text" 
-                               id="note-input" 
-                               placeholder="ملاحظة (اختياري)" 
-                               maxlength="100">
-                    </div>
-                    <textarea id="detail-input" 
-                              placeholder="تفاصيل إضافية (اختياري)" 
-                              maxlength="500"></textarea>
-                    <button id="save-btn" class="save-btn">
-                        💾 حفظ التوفير اليومي
-                    </button>
-                </div>
-            </section>
-            
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-title">المدخرات الكلية</div>
-                    <div class="stat-value" id="total-savings">0</div>
-                    <div class="stat-unit">دينار جزائري</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">المتوسط اليومي</div>
-                    <div class="stat-value" id="daily-average">0</div>
-                    <div class="stat-unit">دينار/يوم</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">أيام التوفير</div>
-                    <div class="stat-value" id="days-count">0</div>
-                    <div class="stat-unit">يوم</div>
-                </div>
-            </div>
-            
-            <section class="history-section">
-                <div class="history-header">
-                    <h2>📜 سجل المدخرات</h2>
-                    <div class="total-display">
-                        <strong id="current-total">0 د.ج</strong>
-                    </div>
-                </div>
-                
-                <div class="table-container">
-                    <table id="savings-table">
-                        <thead>
-                            <tr>
-                                <th>التاريخ</th>
-                                <th>المبلغ</th>
-                                <th>المجموع التراكمي</th>
-                                <th>ملاحظات</th>
-                                <th>إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body">
-                            <!-- البيانات ستظهر هنا -->
-                        </tbody>
-                    </table>
-                    <div id="empty-state" class="empty-state" style="display: none;">
-                        <div class="empty-icon">💰</div>
-                        <h3>لا توجد مدخرات مسجلة بعد</h3>
-                        <p>ابدأ بالتوفير اليوم لتظهر مدخراتك هنا!</p>
-                    </div>
-                </div>
-                
-                <div class="action-buttons">
-                    <button id="export-btn" class="action-btn export-btn">
-                        📥 تصدير البيانات
-                    </button>
-                    <button id="clear-all-btn" class="action-btn clear-btn">
-                        🗑️ مسح الكل
-                    </button>
-                </div>
-            </section>
-        </div>
-        
-        <footer>
-            <p>الحصالة الرقمية الجزائرية - البيانات محفوظة على جهازك</p>
-            <p>الدينار الجزائري (د.ج) | 🇩🇿</p>
-        </footer>
+
+<div class="app">
+
+  <h1 class="title">🐷 حصالة <span>إلكترونية</span></h1>
+
+  <!-- الإجمالي -->
+  <div class="hero">
+    <div class="label">💰 المبلغ الإجمالي في الحصالة</div>
+    <div class="total" id="total">0.00</div>
+    <div class="avg">متوسط الإيداع اليومي: <b id="avg">0.00</b></div>
+    <div class="avg small">📆 أيام المتابعة: <b id="daysSinceStart">0</b></div>
+  </div>
+
+  <!-- الأيام والعدد -->
+  <div class="grid2">
+    <div class="mini">
+      <div class="k">📅 أيام التوفير (كل 6000 = يوم)</div>
+      <div class="v purple" id="days">0</div>
+      <div class="sub">المتبقي لليوم التالي: <b id="remaining">6000</b></div>
     </div>
+    <div class="mini">
+      <div class="k">🧾 عدد الإيداعات</div>
+      <div class="v pink" id="count">0</div>
+    </div>
+  </div>
 
-    <div id="toast" class="toast"></div>
+  <!-- إضافة مبلغ -->
+  <div class="card">
+    <h2><span class="dot"></span> أودِع مبلغًا في الحصالة</h2>
+    <div class="inputRow">
+      <div class="inputWrap">
+        <input id="amount" type="text" inputmode="decimal" placeholder="اكتب المبلغ..." autocomplete="off">
+      </div>
+      <button class="btnAdd" id="addBtn">أضِف</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
 
-    <script>
-        // تطبيق الحصالة اليومية بالدينار الجزائري
-        
-        // تهيئة البيانات
-        let savingsData = [];
-        
-        // DOM Elements
-        const elements = {
-            amountInput: document.getElementById('amount-input'),
-            noteInput: document.getElementById('note-input'),
-            detailInput: document.getElementById('detail-input'),
-            saveBtn: document.getElementById('save-btn'),
-            exportBtn: document.getElementById('export-btn'),
-            clearAllBtn: document.getElementById('clear-all-btn'),
-            tableBody: document.getElementById('table-body'),
-            totalSavings: document.getElementById('total-savings'),
-            dailyAverage: document.getElementById('daily-average'),
-            daysCount: document.getElementById('days-count'),
-            currentDate: document.getElementById('current-date'),
-            currentTotal: document.getElementById('current-total'),
-            emptyState: document.getElementById('empty-state'),
-            toast: document.getElementById('toast')
-        };
-        
-        // تحديث التاريخ الحالي
-        function updateCurrentDate() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            const dateString = now.toLocaleDateString('ar-DZ', options);
-            elements.currentDate.textContent = dateString;
+  <!-- السجل -->
+  <div class="card">
+    <h2><span class="dot"></span> سجل الإيداعات</h2>
+    <div class="list" id="list"></div>
+    <button class="btnReset" id="resetBtn">🗑️ حذف كل السجل والبدء من جديد</button>
+  </div>
+
+  <footer>البيانات محفوظة تلقائيًا في متصفحك 🔒</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const KEY = "piggyBank_v1";
+  const DAILY_GOAL = 6000; // الهدف اليومي الثابت
+  const $ = (id) => document.getElementById(id);
+
+  const elTotal = $("total");
+  const elDays  = $("days");
+  const elCount = $("count");
+  const elAvg   = $("avg");
+  const elDaysSinceStart = $("daysSinceStart");
+  const elRemaining = $("remaining");
+  const elList  = $("list");
+  const elInput = $("amount");
+  const elMsg   = $("msg");
+
+  /* ---------- التخزين ---------- */
+  let data = { deposits: [] };
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.deposits)) {
+          data.deposits = parsed.deposits.filter(
+            (d) => d && typeof d.amount === "number" && typeof d.date === "string"
+          );
         }
-        
-        // تنسيق المبلغ بالدينار الجزائري
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('ar-DZ', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }).format(amount) + ' د.ج';
-        }
-        
-        // إظهار إشعار
-        function showToast(message, type = 'success') {
-            elements.toast.textContent = message;
-            elements.toast.style.background = type === 'error' ? 'var(--danger-color)' : 'var(--primary-color)';
-            elements.toast.classList.add('show');
-            
-            setTimeout(() => {
-                elements.toast.classList.remove('show');
-            }, 3000);
-        }
-        
-        // تحميل البيانات من التخزين المحلي
-        function loadData() {
-            try {
-                const saved = localStorage.getItem('algerianPiggyBank');
-                if (saved) {
-                    savingsData = JSON.parse(saved);
-                }
-            } catch (error) {
-                console.error('Error loading data:', error);
-                showToast('خطأ في تحميل البيانات', 'error');
-            }
-        }
-        
-        // حفظ البيانات في التخزين المحلي
-        function saveData() {
-            try {
-                localStorage.setItem('algerianPiggyBank', JSON.stringify(savingsData));
-            } catch (error) {
-                console.error('Error saving data:', error);
-                showToast('خطأ في حفظ البيانات', 'error');
-            }
-        }
-        
-        // تحديث الإحصائيات
-        function updateStats() {
-            const total = savingsData.reduce((sum, item) => sum + item.amount, 0);
-            const days = savingsData.length;
-            const average = days > 0 ? total / days : 0;
-            
-            elements.totalSavings.textContent = formatCurrency(total);
-            elements.dailyAverage.textContent = formatCurrency(average);
-            elements.daysCount.textContent = days;
-            elements.currentTotal.textContent = formatCurrency(total);
-            
-            // تحديث عنوان المتصفح
-            document.title = `حصالة (${formatCurrency(total)}) - توفير دينار جزائري`;
-        }
-        
-        // تحديث الجدول
-        function updateTable() {
-            if (savingsData.length === 0) {
-                elements.tableBody.innerHTML = '';
-                elements.emptyState.style.display = 'block';
-                return;
-            }
-            
-            elements.emptyState.style.display = 'none';
-            
-            let cumulative = 0;
-            let rowsHTML = '';
-            
-            // فرز البيانات من الأحدث إلى الأقدم
-            const sortedData = [...savingsData].sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            sortedData.forEach((item, index) => {
-                cumulative += item.amount;
-                
-                rowsHTML += `
-                    <tr>
-                        <td>${item.date}</td>
-                        <td class="amount-cell">${formatCurrency(item.amount)}</td>
-                        <td class="cumulative-cell">${formatCurrency(cumulative)}</td>
-                        <td class="note-cell" title="${item.note || ''}">
-                            ${item.note ? (item.note.length > 20 ? item.note.substring(0, 20) + '...' : item.note) : '-'}
-                        </td>
-                        <td>
-                            <button onclick="deleteEntry(${index})" class="delete-btn">
-                                حذف
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            elements.tableBody.innerHTML = rowsHTML;
-        }
-        
-        // إضافة مدخرات جديدة
-        function addSavings() {
-            const amount = parseFloat(elements.amountInput.value);
-            const note = elements.noteInput.value.trim();
-            const details = elements.detailInput.value.trim();
-            
-            // التحقق من صحة المدخلات
-            if (!amount || amount <= 0 || amount > 1000000) {
-                showToast('الرجاء إدخال مبلغ صحيح بين 0.01 و 1,000,000 د.ج', 'error');
-                elements.amountInput.focus();
-                return;
-            }
-            
-            // الحصول على التاريخ الحالي
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('ar-DZ');
-            
-            // إضافة السجل الجديد
-            savingsData.push({
-                date: dateStr,
-                amount: amount,
-                note: note,
-                details: details,
-                timestamp: now.getTime()
-            });
-            
-            // حفظ البيانات
-            saveData();
-            
-            // تحديث الواجهة
-            updateStats();
-            updateTable();
-            
-            // تفريغ الحقول
-            elements.amountInput.value = '';
-            elements.noteInput.value = '';
-            elements.detailInput.value = '';
-            
-            // إظهار رسالة النجاح
-            showToast(`تم حفظ ${formatCurrency(amount)} في حصالتك بنجاح!`);
-            
-            // التركيز على حقل المبلغ
-            elements.amountInput.focus();
-        }
-        
-        // حذف مدخل
-        function deleteEntry(index) {
-            if (confirm('هل أنت متأكد من حذف هذا المدخل؟')) {
-                // التحويل من الفهرس في العرض إلى الفهرس في البيانات
-                const sortedData = [...savingsData].sort((a, b) => new Date(b.date) - new Date(a.date));
-                const itemToDelete = sortedData[index];
-                const actualIndex = savingsData.findIndex(item => item.timestamp === itemToDelete.timestamp);
-                
-                if (actualIndex !== -1) {
-                    savingsData.splice(actualIndex, 1);
-                    saveData();
-                    updateStats();
-                    updateTable();
-                    showToast('تم حذف المدخل بنجاح');
-                }
-            }
-        }
-        
-        // تصدير البيانات
-        function exportData() {
-            if (savingsData.length === 0) {
-                showToast('لا توجد بيانات للتصدير', 'error');
-                return;
-            }
-            
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "التاريخ,المبلغ (د.ج),الملاحظات,التفاصيل,الطابع الزمني\n";
-            
-            savingsData.forEach(item => {
-                const row = [
-                    `"${item.date}"`,
-                    item.amount,
-                    `"${item.note || ''}"`,
-                    `"${item.details || ''}"`,
-                    item.timestamp
-                ].join(',');
-                csvContent += row + "\n";
-            });
-            
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `مدخرات_حصالة_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showToast('تم تصدير البيانات بنجاح');
-        }
-        
-        // مسح كل البيانات
-        function clearAllData() {
-            if (savingsData.length === 0) {
-                showToast('لا توجد بيانات للمسح', 'error');
-                return;
-            }
-            
-            if (confirm('هل أنت متأكد من مسح كل البيانات؟ لا يمكن التراجع عن هذا الإجراء.')) {
-                savingsData = [];
-                saveData();
-                updateStats();
-                updateTable();
-                showToast('تم مسح كل البيانات بنجاح');
-            }
-        }
-        
-        // تهيئة التطبيق
-        function initApp() {
-            // تحميل البيانات
-            loadData();
-            
-            // تحديث التاريخ
-            updateCurrentDate();
-            
-            // تحديث الإحصائيات والجدول
-            updateStats();
-            updateTable();
-            
-            // إضافة مستمعي الأحداث
-            elements.saveBtn.addEventListener('click', addSavings);
-            elements.exportBtn.addEventListener('click', exportData);
-            elements.clearAllBtn.addEventListener('click', clearAllData);
-            
-            // السماح بإدخال البيانات بالضغط على Enter
-            elements.amountInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    addSavings();
-                }
-            });
-            
-            elements.noteInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    elements.detailInput.focus();
-                }
-            });
-            
-            // تحديث التاريخ كل دقيقة
-            setInterval(updateCurrentDate, 60000);
-            
-            // التركيز على حقل المبلغ
-            setTimeout(() => {
-                elements.amountInput.focus();
-            }, 500);
-            
-            // إضافة تأثيرات للزر عند النقر (للأجهزة المحمولة)
-            elements.saveBtn.addEventListener('touchstart', function() {
-                this.style.transform = 'scale(0.98)';
-            });
-            
-            elements.saveBtn.addEventListener('touchend', function() {
-                this.style.transform = '';
-            });
-            
-            // منع الإرسال التلقائي للنماذج
-            document.querySelectorAll('input').forEach(input => {
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && input.type !== 'button') {
-                        e.preventDefault();
-                    }
-                });
-            });
-        }
-        
-        // تهيئة التطبيق عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', initApp);
-        
-        // جعل الوظائف متاحة عالمياً
-        window.deleteEntry = deleteEntry;
-        
-        // تحميل البيانات عند فتح الصفحة
-        window.addEventListener('load', () => {
-            // التأكد من أن الصفحة قد تم تحميلها بالكامل
-            setTimeout(() => {
-                elements.amountInput.focus();
-            }, 300);
-        });
-    </script>
+      }
+    } catch (e) { /* تجاهل */ }
+  }
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+  }
+
+  /* ---------- أدوات ---------- */
+  function todayStr() {
+    const d = new Date();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return d.getFullYear() + "-" + m + "-" + day;
+  }
+
+  function parseDate(s) {
+    const p = s.split("-").map(Number);
+    return new Date(p[0], p[1] - 1, p[2]);
+  }
+
+  function fmtMoney(n) {
+    return Number(n).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function fmtInt(n) {
+    return Number(n).toLocaleString("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
+  }
+
+  function fmtDate(s) {
+    try {
+      return parseDate(s).toLocaleDateString("ar-DZ", {
+        weekday: "long", day: "numeric", month: "long", year: "numeric"
+      });
+    } catch (e) { return s; }
+  }
+
+  // تحويل الأرقام العربية/الفارسية والفاصلة إلى صيغة قابلة للحساب
+  function normalizeNum(str) {
+    const ar = "٠١٢٣٤٥٦٧٨٩";
+    const fa = "۰۱۲۳۴۵۶۷۸۹";
+    let out = "";
+    for (const ch of String(str)) {
+      let i = ar.indexOf(ch);
+      if (i > -1) { out += i; continue; }
+      i = fa.indexOf(ch);
+      if (i > -1) { out += i; continue; }
+      if (ch === "," || ch === "٫" || ch === "٬") { out += "."; continue; }
+      if (ch === " ") continue;
+      out += ch;
+    }
+    return out;
+  }
+
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+
+  function showMsg(el, text, ok) {
+    el.textContent = text;
+    el.classList.toggle("ok", !!ok);
+    el.classList.add("show");
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove("show"), 2200);
+  }
+
+  /* ---------- العرض ---------- */
+  function render() {
+    const deposits = data.deposits;
+
+    const total = deposits.reduce((s, d) => s + d.amount, 0);
+    elTotal.textContent = fmtMoney(total);
+    elCount.textContent = deposits.length;
+
+    // عدد الأيام منذ أول إيداع (للمتوسط)
+    let daysSinceStart = 0;
+    if (deposits.length) {
+      const times = deposits.map((d) => parseDate(d.date).getTime());
+      const first = Math.min.apply(null, times);
+      const now = parseDate(todayStr()).getTime();
+      daysSinceStart = Math.floor((now - first) / 86400000) + 1;
+      if (daysSinceStart < 1) daysSinceStart = 1;
+    }
+    elDaysSinceStart.textContent = daysSinceStart;
+    elAvg.textContent = fmtMoney(daysSinceStart > 0 ? total / daysSinceStart : 0);
+
+    // أيام التوفير بناءً على الهدف اليومي الثابت
+    const daysSaved = Math.floor(total / DAILY_GOAL);
+    elDays.textContent = daysSaved;
+
+    // المتبقي لليوم التالي
+    const remainder = total % DAILY_GOAL;
+    const remaining = (remainder === 0 && total > 0) ? 0 : (DAILY_GOAL - remainder);
+    elRemaining.textContent = fmtMoney(remaining);
+
+    // السجل (الأحدث أولًا)
+    const sorted = deposits.slice().sort((a, b) => {
+      if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+      return (b.ts || 0) - (a.ts || 0);
+    });
+
+    if (!sorted.length) {
+      elList.innerHTML =
+        '<div class="empty"><span class="big">🐷</span>الحصالة فارغة حاليًا...<br>ابدأ بإيداع أول مبلغ!</div>';
+      return;
+    }
+
+    elList.innerHTML = sorted.map((d) =>
+      '<div class="item">' +
+        '<div class="amount">+ ' + fmtMoney(d.amount) + '</div>' +
+        '<div class="date">' + fmtDate(d.date) + '</div>' +
+        '<button class="del" data-id="' + d.id + '" title="حذف">✕</button>' +
+      '</div>'
+    ).join("");
+  }
+
+  /* ---------- الإضافة ---------- */
+  function addDeposit() {
+    const raw = normalizeNum(elInput.value).trim();
+
+    if (raw === "") {
+      showMsg(elMsg, "⚠️ اكتب المبلغ أولًا");
+      elInput.focus();
+      return;
+    }
+
+    const amount = parseFloat(raw);
+
+    if (!isFinite(amount) || amount <= 0) {
+      showMsg(elMsg, "⚠️ المبلغ غير صحيح، اكتب رقمًا أكبر من صفر");
+      elInput.select();
+      return;
+    }
+
+    const value = Math.round(amount * 100) / 100;
+
+    data.deposits.push({
+      id: uid(),
+      amount: value,
+      date: todayStr(),
+      ts: Date.now()
+    });
+
+    save();
+    render();
+
+    elInput.value = "";
+    elInput.focus();
+
+    elTotal.classList.add("pop");
+    setTimeout(() => elTotal.classList.remove("pop"), 260);
+
+    showMsg(elMsg, "✅ تم إيداع " + fmtMoney(value) + " بنجاح", true);
+  }
+
+  /* ---------- الأحداث ---------- */
+  $("addBtn").addEventListener("click", addDeposit);
+
+  elInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); addDeposit(); }
+  });
+
+  elList.addEventListener("click", function (e) {
+    const btn = e.target.closest(".del");
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const item = data.deposits.find((d) => d.id === id);
+    if (!item) return;
+
+    if (confirm("هل تريد حذف هذا الإيداع (" + fmtMoney(item.amount) + ") ؟")) {
+      data.deposits = data.deposits.filter((d) => d.id !== id);
+      save();
+      render();
+    }
+  });
+
+  $("resetBtn").addEventListener("click", function () {
+    if (!data.deposits.length) { showMsg(elMsg, "السجل فارغ بالفعل"); return; }
+    if (confirm("هل أنت متأكد من حذف كل السجل؟ لا يمكن التراجع!")) {
+      data.deposits = [];
+      save();
+      render();
+      showMsg(elMsg, "🗑️ تم حذف كل السجل", true);
+    }
+  });
+
+  /* ---------- الإقلاع ---------- */
+  load();
+  render();
+  elInput.focus();
+})();
+</script>
 </body>
 </html>
