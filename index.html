@@ -37,7 +37,6 @@
 
   .app{width:100%;max-width:520px;display:flex;flex-direction:column;gap:16px;}
 
-  /* ===== الترويسة ===== */
   .title{
     text-align:center;
     font-size:21px;
@@ -93,6 +92,12 @@
     border-radius:999px;
     backdrop-filter:blur(4px);
   }
+  .hero .avg.small{
+    font-size:12px;
+    padding:4px 10px;
+    margin-top:6px;
+    opacity:.9;
+  }
 
   /* ===== البطاقات الصغيرة ===== */
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -109,6 +114,14 @@
   .mini .v{font-size:26px;font-weight:900;letter-spacing:-.5px;}
   .mini .v.purple{color:var(--primary);}
   .mini .v.pink{color:var(--pink);}
+  .mini .sub{
+    font-size:11px;
+    font-weight:600;
+    color:var(--muted);
+    margin-top:4px;
+    line-height:1.4;
+  }
+  .mini .sub b{color:var(--text);}
 
   /* ===== الإدخال ===== */
   .card{
@@ -158,6 +171,12 @@
     white-space:nowrap;
   }
   .btnAdd:active{transform:scale(.96);}
+
+  .btnSmall{
+    padding:0 16px;
+    font-size:14px;
+    border-radius:14px;
+  }
 
   .msg{
     margin-top:10px;
@@ -256,13 +275,15 @@
     <div class="label">💰 المبلغ الإجمالي في الحصالة</div>
     <div class="total" id="total">0.00</div>
     <div class="avg">متوسط الإيداع اليومي: <b id="avg">0.00</b></div>
+    <div class="avg small">📆 أيام المتابعة: <b id="daysSinceStart">0</b></div>
   </div>
 
   <!-- الأيام والعدد -->
   <div class="grid2">
     <div class="mini">
-      <div class="k">📅 عدد الأيام</div>
+      <div class="k">📅 أيام التوفير (كل 6000 = يوم)</div>
       <div class="v purple" id="days">0</div>
+      <div class="sub">المتبقي لليوم التالي: <b id="remaining">6000</b></div>
     </div>
     <div class="mini">
       <div class="k">🧾 عدد الإيداعات</div>
@@ -297,12 +318,15 @@
   "use strict";
 
   const KEY = "piggyBank_v1";
+  const DAILY_GOAL = 6000; // الهدف اليومي الثابت
   const $ = (id) => document.getElementById(id);
 
   const elTotal = $("total");
   const elDays  = $("days");
   const elCount = $("count");
   const elAvg   = $("avg");
+  const elDaysSinceStart = $("daysSinceStart");
+  const elRemaining = $("remaining");
   const elList  = $("list");
   const elInput = $("amount");
   const elMsg   = $("msg");
@@ -313,12 +337,13 @@
   function load() {
     try {
       const raw = localStorage.getItem(KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw);
-      if (parsed && Array.isArray(parsed.deposits)) {
-        data.deposits = parsed.deposits.filter(
-          (d) => d && typeof d.amount === "number" && typeof d.date === "string"
-        );
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && Array.isArray(parsed.deposits)) {
+          data.deposits = parsed.deposits.filter(
+            (d) => d && typeof d.amount === "number" && typeof d.date === "string"
+          );
+        }
       }
     } catch (e) { /* تجاهل */ }
   }
@@ -344,6 +369,13 @@
     return Number(n).toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
+    });
+  }
+
+  function fmtInt(n) {
+    return Number(n).toLocaleString("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     });
   }
 
@@ -376,12 +408,12 @@
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
   }
 
-  function showMsg(text, ok) {
-    elMsg.textContent = text;
-    elMsg.classList.toggle("ok", !!ok);
-    elMsg.classList.add("show");
-    clearTimeout(showMsg._t);
-    showMsg._t = setTimeout(() => elMsg.classList.remove("show"), 2200);
+  function showMsg(el, text, ok) {
+    el.textContent = text;
+    el.classList.toggle("ok", !!ok);
+    el.classList.add("show");
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove("show"), 2200);
   }
 
   /* ---------- العرض ---------- */
@@ -392,17 +424,26 @@
     elTotal.textContent = fmtMoney(total);
     elCount.textContent = deposits.length;
 
-    // عدد الأيام = من أول إيداع إلى اليوم (شامل)
-    let days = 0;
+    // عدد الأيام منذ أول إيداع (للمتوسط)
+    let daysSinceStart = 0;
     if (deposits.length) {
       const times = deposits.map((d) => parseDate(d.date).getTime());
       const first = Math.min.apply(null, times);
       const now = parseDate(todayStr()).getTime();
-      days = Math.floor((now - first) / 86400000) + 1;
-      if (days < 1) days = 1;
+      daysSinceStart = Math.floor((now - first) / 86400000) + 1;
+      if (daysSinceStart < 1) daysSinceStart = 1;
     }
-    elDays.textContent = days;
-    elAvg.textContent = fmtMoney(days > 0 ? total / days : 0);
+    elDaysSinceStart.textContent = daysSinceStart;
+    elAvg.textContent = fmtMoney(daysSinceStart > 0 ? total / daysSinceStart : 0);
+
+    // أيام التوفير بناءً على الهدف اليومي الثابت
+    const daysSaved = Math.floor(total / DAILY_GOAL);
+    elDays.textContent = daysSaved;
+
+    // المتبقي لليوم التالي
+    const remainder = total % DAILY_GOAL;
+    const remaining = (remainder === 0 && total > 0) ? 0 : (DAILY_GOAL - remainder);
+    elRemaining.textContent = fmtMoney(remaining);
 
     // السجل (الأحدث أولًا)
     const sorted = deposits.slice().sort((a, b) => {
@@ -430,7 +471,7 @@
     const raw = normalizeNum(elInput.value).trim();
 
     if (raw === "") {
-      showMsg("⚠️ اكتب المبلغ أولًا");
+      showMsg(elMsg, "⚠️ اكتب المبلغ أولًا");
       elInput.focus();
       return;
     }
@@ -438,7 +479,7 @@
     const amount = parseFloat(raw);
 
     if (!isFinite(amount) || amount <= 0) {
-      showMsg("⚠️ المبلغ غير صحيح، اكتب رقمًا أكبر من صفر");
+      showMsg(elMsg, "⚠️ المبلغ غير صحيح، اكتب رقمًا أكبر من صفر");
       elInput.select();
       return;
     }
@@ -461,7 +502,7 @@
     elTotal.classList.add("pop");
     setTimeout(() => elTotal.classList.remove("pop"), 260);
 
-    showMsg("✅ تم إيداع " + fmtMoney(value) + " بنجاح", true);
+    showMsg(elMsg, "✅ تم إيداع " + fmtMoney(value) + " بنجاح", true);
   }
 
   /* ---------- الأحداث ---------- */
@@ -486,12 +527,12 @@
   });
 
   $("resetBtn").addEventListener("click", function () {
-    if (!data.deposits.length) { showMsg("السجل فارغ بالفعل"); return; }
+    if (!data.deposits.length) { showMsg(elMsg, "السجل فارغ بالفعل"); return; }
     if (confirm("هل أنت متأكد من حذف كل السجل؟ لا يمكن التراجع!")) {
       data.deposits = [];
       save();
       render();
-      showMsg("🗑️ تم حذف كل السجل", true);
+      showMsg(elMsg, "🗑️ تم حذف كل السجل", true);
     }
   });
 
